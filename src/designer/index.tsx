@@ -12,7 +12,13 @@ import { SettingsPanel } from "./SettingPanel";
 const { Content, Sider, Header } = Layout;
 
 export default class Designer extends React.Component {
-    
+    layoutInfo:  any
+    constructor(props: any) {
+        super(props);
+
+        this.layoutInfo = sessionStorage.getItem("pageinfo");
+    }    
+
     render () {
         
         return (<Layout style={{ minHeight: "100%" }}>  
@@ -38,7 +44,7 @@ export default class Designer extends React.Component {
                 <Content style={{ marginLeft: 250, marginRight: 300 }}>
                     <PaperProvider>
                     <Viewport>
-                        <Frame>
+                        <Frame json={this.layoutInfo || undefined}>
                         <Element canvas is={components.Page} padding={5} width="600px" height="700px" background="#fff">
                                 
                         </Element>
@@ -64,5 +70,11 @@ export default class Designer extends React.Component {
 
 const SaveButton = () => {
     const { query } = useEditor();
-    return <a onClick={() => console.log(query.serialize()) }>Get JSON</a>
+    const saveFunc = React.useCallback(() => {
+        const v = query.serialize();
+        console.log(v);
+        sessionStorage.setItem("pageinfo", v);
+    }, []);
+    
+    return <a onClick={saveFunc}>Save JSON</a>
   }
